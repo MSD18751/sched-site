@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from .forms import UploadFileForm
+from .tasks import solveit
 
 
 # Create your views here.
@@ -9,7 +10,11 @@ def upload_file(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             thefile = request.FILES['file']
-            return HttpResponse("Hello!")
+            with open("tempo.dat", "wb+") as f:
+                for chunk in thefile.chunks():
+                    f.write(chunk)
+            solveit.delay("tempo.dat")
+            return HttpResponse("beep")
         else:
             print("Memay")
     else:
