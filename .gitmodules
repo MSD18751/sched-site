@@ -1,0 +1,3 @@
+[submodule "sched_site/res_sched/sched_lib"]
+	path = sched_site/res_sched/sched_lib
+	url = https://github.com/MSD18751/resident-scheduler
