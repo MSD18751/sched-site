@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %} Resident Scheduler{% endblock %}</title>
+    </head>
+    <body>
+        <header>
+            <h1>Bit. Nibble. Byte. Presents: Resident Scheduler!</h1>
+            {% if user.is_authenticated %}
+               <p> Welcome, {{request.user.username}} | <a href="{% url 'profile' %}">edit profile</a> |
+                <a href="{% url 'files' %}">files</a> | <a href={% url 'schedule' %}>schedule</a> |
+                <a href="{% url 'logout' %}">logout</a></p>
+            {% else %}
+                <a href="{% url 'login' %}">login</a> / <a href="{% url 'signup' %}">signup</a>
+            {% endif %}
+            <hr>
+        </header>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+    </body>
+</html>
