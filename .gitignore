@@ -102,3 +102,4 @@ ENV/
 
 # secret file
 secrets.py
+sched_site/users/

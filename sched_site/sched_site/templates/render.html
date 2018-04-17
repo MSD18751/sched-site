@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% load static %}
+
+{% block content %}
+    <table>
+        <tr>
+            <th></th>
+            <th colspan="{{ tlen }}">Time Block</th>
+        </tr>
+        <tr>
+            <th>Resident ID</th>
+            {% for i in times %}
+                <th>{{ i }}</th>
+            {% endfor %}
+        </tr>
+        {% for id, subdicts in sdict.items|dictsort:0 %}
+            {% if forloop.counter|divisibleby:2 %}
+            <tr>
+                <td bgcolor="#F5F5F5">{{ id }}</td>
+                {% for time, values in subdicts.items %}
+                    <td bgcolor="#F5F5F5">{{ values }}</td>
+                {% endfor %}    
+            </tr>
+            {% else %}
+            <tr>
+                <td bgcolor="#BDBDBD">{{ id }}</td>
+                {% for time, values in subdicts.items %}
+                    <td bgcolor="#BDBDBD">{{ values }}</td>
+                {% endfor %}    
+            </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+{% endblock %}

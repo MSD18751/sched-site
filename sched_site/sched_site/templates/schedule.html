@@ -1,7 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% for key, val in res.items %}
-        <p>{{ key }}: {{ val }}</p>
+<table>
+    {% for f in files %}
+        <tr>
+            <form method="post">
+                {% csrf_token %}
+                <th>{{ f }}</th>
+                <th><button type="submit" name="render_me" value="{{ f }}">Display</button></th>
+                <th><button type="submit" name="dl_me" value="{{ f }}">Download CSV</button></th>
+                <th><button type="submit" name="delet_this" value="{{ f }}">Delete</button></th>
+            </form>
+        </tr>
     {% endfor %}
+</table>
 {% endblock %}

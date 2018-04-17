@@ -1,3 +1,4 @@
+import json
 import ntpath
 import os
 from django.shortcuts import render, redirect, HttpResponse
@@ -76,22 +77,27 @@ def file_view(request):
 
     files = os.listdir("users/%s/data/" % profile.uid)
     if request.method == "POST":
-        form = UploadFileForm(request.POST, request.FILES)
 
-        if form.is_valid():
-            user_file = request.FILES['file']
-            print()
-            path = user_file.name
-            head, tail = ntpath.split(path)
-            path = tail or ntpath.basename(head)
-            path = "users/%s/data/%s" % (profile.uid, path)
-            print(path)
+        schedule_me = request.POST.getlist("schedule_me")
 
-            with open(path, "wb+") as f:
-                for chunk in user_file.chunks():
-                    f.write(chunk)
+        if (schedule_me):
+            solveit.delay(profile.uid, schedule_me[0])
+            return redirect("schedules")
+        else:
+            form = UploadFileForm(request.POST, request.FILES)
+            if form.is_valid():
+                user_file = request.FILES['file']
+                path = user_file.name
+                head, tail = ntpath.split(path)
+                path = tail or ntpath.basename(head)
+                path = "users/%s/data/%s" % (profile.uid, path)
+                print(path)
 
-                return redirect("/files/")
+                with open(path, "wb+") as f:
+                    for chunk in user_file.chunks():
+                        f.write(chunk)
+
+                    return redirect("/files/")
     else:
         form = UploadFileForm()
 
@@ -104,19 +110,34 @@ def schedule_view(request):
     except Profile.DoesNotExist:
         profile = Profile(user=request.user)
 
-    if request.method == "GET":
-        path = "users/%s/data/data.dat" % profile.uid
-        print(path)
-        resdict = solveit.delay(path)
-        solved = resdict.get()
+    files = os.listdir("users/%s/schedules/" % profile.uid)
 
-        return render(request, "schedule.html", {"res": solved})
-        mystr = ""
-        for key,val in solved.items():
-            mystr += "<p>"
-            mystr += key
-            mystr += ": "
-            mystr += val
-            mystr += "</p>"
-        return HttpResponse("<html><body>" + mystr + 
-                            "</body></html>")
+    if request.method == "POST":
+        render_me = request.POST.getlist("render_me")
+        if render_me:
+            with open("users/%s/schedules/%s" % (profile.uid, render_me[0]), "r") as f:
+                schedule = f.read()
+            
+            jdict = json.loads(schedule)
+            times = set()
+            peeps = set()
+            schedule_dict = {}
+            for key, value in jdict.items():
+                peeps.add(int(key))
+                schedule_dict[int(key)] = {}
+                for time, unit in value.items():
+                    times.add(int(time))
+                    schedule_dict[int(key)][int(time)] = unit
+            
+            times = list(times)
+            times.sort()
+            peeps = list(peeps)
+            peeps.sort()
+            tlen = len(times)
+            return render(request, "render.html", {"times": times, "peeps": peeps, "sdict": schedule_dict, "tlen": tlen})
+        delete_me = request.POST.getlist("delet_this")
+        if delete_me:
+            delete_path = "users/%s/schedules/%s" % (profile.uid, delete_me[0])
+            os.system("rm %s" % delete_path)
+            return redirect("/schedules/")
+    return render(request, "schedule.html", {"files": files})

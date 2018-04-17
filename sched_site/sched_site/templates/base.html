@@ -1,21 +1,53 @@
+
 <!DOCTYPE html>
 <html lang="en">
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
     <head>
         <meta charset="utf-8">
         <title>{% block title %} Resident Scheduler{% endblock %}</title>
+        {% load staticfiles %}
+        {% load bootstrap3 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript jquery=1 %}
+        <link rel="stylesheet" href="{% static 'nav.css' %}">
+        <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}">
     </head>
     <body>
-        <header>
-            <h1>Bit. Nibble. Byte. Presents: Resident Scheduler!</h1>
-            {% if user.is_authenticated %}
-               <p> Welcome, {{request.user.username}} | <a href="{% url 'profile' %}">edit profile</a> |
-                <a href="{% url 'files' %}">files</a> | <a href={% url 'schedule' %}>schedule</a> |
-                <a href="{% url 'logout' %}">logout</a></p>
-            {% else %}
-                <a href="{% url 'login' %}">login</a> / <a href="{% url 'signup' %}">signup</a>
-            {% endif %}
-            <hr>
-        </header>
+        <nav class="navbar-custom">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#dropdown">
+                        <span class="sr-only">Toggle Nav</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                    <a href="#" class="navbar-brand">
+                        Resident Scheduler
+                    </a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="dropdown">
+                    <ul class="nav navbar-nav navbar-right" role="navigation">
+                        {% if user.is_authenticated %}
+                            <li><a href="/">Home</a></li>
+                            <li><a href="{% url 'profile'%} ">Profile</a></li>
+                            <li><a href="{% url 'files'%} ">Files</a></li>
+                            <li><a href="{% url 'schedules'%} ">Schedules</a></li>
+                            <li><a href="{% url 'logout'%} ">Logout</a></li>
+                        {% else %}
+                            <li><a href="{% url 'login' %}">Login</a></li>
+                            <li><a href="{% url 'signup' %}">Signup</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
         <main>
             {% block content %}
             {% endblock %}

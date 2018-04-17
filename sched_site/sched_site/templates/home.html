@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
+{% load bootstrap3 %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
 
 {% block content %}
     {% if user.is_authenticated %}
-        <p>Welcome to your home page!</p>
+        <h1>Welcome to your home page, {{ user.username }}!</h1>
     {% else %}
         <h1>I am a placeholder! Do you have an appointment? Please log in</h1>
     {% endif %}

@@ -1,12 +1,27 @@
 {% extends 'base.html' %}
+{% load bootstrap3 %}
+{% load static %}
 
 {% block content %}
-    {% for f in files %}
-        <p>{{ f }}</p>
-    {% endfor %}
+<table>
+        {% for f in files %}
+            <tr>
+                <form method="post">
+                    {% csrf_token %}
+                    <th>{{ f }}</th>
+                    <th><button type="submit" name="schedule_me" value="{{ f }}">Generate Schedule</button></th>
+                    <th><button type="submit" name="delet_this" value="{{ f }}">Delete</button></th>
+                </form>
+            </tr>
+        {% endfor %}
+    </table>
+
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Upload</button>
+        {% bootstrap_form form %}
+        {% buttons %}
+        <button type="submit">
+            {% bootstrap_icon "star" %} Upload</button>
+        {% endbuttons %}
     </form>
 {% endblock %}
