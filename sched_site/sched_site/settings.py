@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "combuter.student.rit.edu"]
+ALLOWED_HOSTS = ["localhost",]
 
 broker_url = 'redis:://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
